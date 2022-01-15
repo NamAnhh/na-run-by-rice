@@ -1,0 +1,52 @@
+.App{
+    margin-top: 50px;
+  }
+  .wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .p2p-usdt{
+    margin-top: 1rem;
+    font-size: 22px;
+  }
+  
+  .wrap .card{
+    padding: 2rem;
+  }
+  .wrap .card .label{
+    font-size: 30px;
+    font-weight: bold;  
+    margin-bottom: 1rem;
+  }
+  .usdt{
+    color:#26a69a;
+  }
+  .vndc{
+    color:#ffa500;
+  }
+  .wrap .card .price{  
+    font-weight: bold;  
+    font-size: 30px;
+  }
+  .exchange{
+    font-size: 22px;
+  }
+  .alert-buy{
+    font-size: 30px;
+    background: #585656;
+  }
+  table{
+    width:100%;
+    font-size:22px;
+    max-width: 1200px;
+    margin:0 auto;
+  }
+  .up-price{
+    font-weight: bold;
+    background-color: green;
+  }
+  .down-price{
+    font-weight: bold;
+    background-color: red;
+  }
