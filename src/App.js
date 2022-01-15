@@ -1,35 +1,13 @@
-import React, { useEffect, useState, useMemo, createRef } from "react";
-import logo from "./logo.svg";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import RowInfo from "./components/RowInfo/index";
 import "./App.css";
-import { getPercentFluctuating } from "./func/func";
 import notifyAudio from "./assets/tien-ve4.mp3";
 
 function getAllListCrypto() {
   return axios.get("https://exchange.vndc.io/exchange/api/v1/showup-prices");
 }
-function getCryptoBySymbolAtlas(symbol) {
-  return axios.get(
-    `https://api.attlas.io/api/v1/exchange/depth?symbol=${symbol || "RACAUSDT"}`
-  );
-}
 
-function getKaiInfo() {
-  return axios
-    .post(
-      `https://ex-graph.kardiachain.io/subgraphs/name/kai/exchange-v2`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-    .then((res) => {
-      console.log(res?.data);
-    });
-}
 function getUsdtP2p(symbol, type) {
   return axios
     .get(
@@ -47,21 +25,21 @@ function getUsdtP2p(symbol, type) {
 }
 
 const useAudio = (url) => {
-  const audio = useMemo(() => new Audio(url), []);
+  const audio = useMemo(() => new Audio(url), [url]);
   const [playing, setPlaying] = useState(false);
 
   const toggle = () => setPlaying(true);
 
   useEffect(() => {
     playing ? audio.play() : audio.pause();
-  }, [playing]);
+  }, [playing, audio]);
 
   useEffect(() => {
     audio.addEventListener("ended", () => setPlaying(false));
     return () => {
       audio.removeEventListener("ended", () => setPlaying(false));
     };
-  }, []);
+  }, [audio]);
 
   return [playing, toggle];
 };
@@ -69,11 +47,9 @@ const useAudio = (url) => {
 function App() {
   const [listCoins, setListCoins] = useState([]);
   const [usdtVndcFixed, setUsdtVndcFixed] = useState(
-    localStorage.getItem("usdt") || 23800
+    localStorage.getItem("usdt") || 23450
   );
   const [playing, alertNotify] = useAudio(notifyAudio);
-  const [atlasRaccaUsdt, setAtlasRaccaUsdt] = useState({});
-  const [atlasRaccaVndc, setAtlasRaccaVndc] = useState({});
 
   const handleUsdt = async () => {
     const [usdtBuy, usdtSell] = await Promise.all([
@@ -87,34 +63,12 @@ function App() {
     }
   };
 
-  const handleGetAtlasCrypto = async () => {
-    try {
-      const [resusdt, resvndc] = await Promise.all([
-        getCryptoBySymbolAtlas("RACAUSDT"),
-        getCryptoBySymbolAtlas("RACAVNDC"),
-      ]);
-      const dataUsdt = resusdt?.data?.data;
-      const dataVndc = resvndc?.data?.data;
-      setAtlasRaccaUsdt({
-        ask: dataUsdt.bids[0][0],
-        bid: dataUsdt.asks[0][0],
-      });
-      setAtlasRaccaVndc({
-        ask: dataVndc.bids[0][0],
-        bid: dataVndc.asks[0][0],
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     setInterval(() => {
       handleUsdt();
     }, 10000);
     // getKaiInfo();
     setInterval(async () => {
-      handleGetAtlasCrypto();
       const res = await getAllListCrypto();
       const data = res?.data;
       setListCoins(data);
