@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { calculatePercent } from "./../../func/func";
 import "./row-info.css";
-import { getPercentFluctuating, calculatePercent } from "./../../func/func";
 
 const RowInfo = ({
   name,
