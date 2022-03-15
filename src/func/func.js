@@ -12,3 +12,21 @@ export function getPercentFluctuating(avgVndc, usdtVndc, inflation) {
   }
   return 0;
 }
+
+export const calculatePercent = (coinVNDC, coinUSDT) => {
+  console.log(
+    "Number(coinVNDC.ask) > Number(coin2.bid)123",
+    Number(coinVNDC.ask) > Number(coinUSDT.bid)
+  );
+  if (Number(coinVNDC.ask) > Number(coinUSDT.bid)) {
+    const deviation = Number(coinVNDC.ask) - Number(coinUSDT.bid);
+    console.log("deviationVNDC > USDT", deviation);
+    return (deviation / Number(coinUSDT.bid)) * 100;
+  }
+  if (Number(coinUSDT.ask) > Number(coinVNDC.bid)) {
+    const deviation = Number(coinUSDT.ask) - Number(coinVNDC.bid);
+    console.log("deviationVNDC < USDT", deviation);
+    return (deviation / Number(coinVNDC.bid)) * 100;
+  }
+  return 0;
+};

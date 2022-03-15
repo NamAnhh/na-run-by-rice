@@ -47,7 +47,7 @@ const useAudio = (url) => {
 function App() {
   const [listCoins, setListCoins] = useState([]);
   const [usdtVndcFixed, setUsdtVndcFixed] = useState(
-    localStorage.getItem("usdt") || 23450
+    localStorage.getItem("usdt") || 23780
   );
   const [playing, alertNotify] = useAudio(notifyAudio);
 

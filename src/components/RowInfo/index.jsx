@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./row-info.css";
-import { getPercentFluctuating } from "./../../func/func";
+import { getPercentFluctuating, calculatePercent } from "./../../func/func";
 
 const RowInfo = ({
   name,
@@ -21,9 +21,28 @@ const RowInfo = ({
   );
   const usdtExchangePrice = Number(usdtVndcFixed * avgUsdtPrice);
 
-  const percentFluctuating = getPercentFluctuating(
-    avgVndcPrice,
-    usdtExchangePrice,
+  // const percentFluctuating = getPercentFluctuating(
+  //   avgVndcPrice,
+  //   usdtExchangePrice,
+  //   percentInlation || 0.01
+  // );
+
+  const convertPrice = (priceObject, numberConvert) => {
+    if (priceObject) {
+      return {
+        bid: Number(priceObject.bid) * Number(numberConvert),
+        ask: Number(priceObject.ask) * Number(numberConvert),
+      };
+    }
+    return {
+      bid: 0,
+      ask: 0,
+    };
+  };
+
+  const percentFluctuating = calculatePercent(
+    convertPrice(vndcPrice, 1),
+    convertPrice(usdtPrice, usdtVndcFixed),
     percentInlation || 0.01
   );
 
@@ -37,9 +56,11 @@ const RowInfo = ({
         <td>{name}</td>
         <td>
           <div className="price usdt">
-            Buy: {usdtPrice?.bid}
+            Buy: {usdtPrice?.bid} -{" "}
+            {(usdtPrice?.bid * usdtVndcFixed).toFixed(2)}
             <br />
-            Sell: {usdtPrice?.ask}
+            Sell: {usdtPrice?.ask} -{" "}
+            {(usdtPrice?.ask * usdtVndcFixed).toFixed(2)}
           </div>
         </td>
         <td>
@@ -66,7 +87,7 @@ const RowInfo = ({
         </td>
         <td className={`${percentFluctuating > 0 ? "up-price" : "down-price"}`}>
           {usdtExchangePrice?.toFixed(2)}
-          <br /> {percentFluctuating}%
+          <br /> {percentFluctuating.toFixed(2)}%
         </td>
       </tr>
       <tr>
