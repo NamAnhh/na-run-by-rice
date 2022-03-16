@@ -45,6 +45,7 @@ const RowInfo = ({
     convertPrice(usdtPrice, usdtVndcFixed),
     percentInlation || 0.01
   );
+  console.log("percentFluctuating1231", percentFluctuating);
 
   if (percentFluctuating > Number(percentAlertFixed)) {
     handleALert();
@@ -87,7 +88,7 @@ const RowInfo = ({
         </td>
         <td className={`${percentFluctuating > 0 ? "up-price" : "down-price"}`}>
           {usdtExchangePrice?.toFixed(2)}
-          <br /> {percentFluctuating.toFixed(2)}%
+          <br /> {percentFluctuating?.toFixed(2)}%
         </td>
       </tr>
       <tr>

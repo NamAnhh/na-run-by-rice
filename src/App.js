@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios";
-import RowInfo from "./components/RowInfo/index";
-import "./App.css";
+import React, { useEffect, useMemo, useState } from "react";
 import notifyAudio from "./assets/tien-ve4.mp3";
+import RowInfo from "./components/RowInfo/index";
+import axios from "axios";
+import "./App.css";
 
 function getAllListCrypto() {
   return axios.get("https://exchange.vndc.io/exchange/api/v1/showup-prices");
