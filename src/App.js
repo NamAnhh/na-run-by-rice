@@ -4,6 +4,12 @@ import RowInfo from "./components/RowInfo/index";
 import axios from "axios";
 import "./App.css";
 
+function getCryptoBySymbolAtlas(symbol) {
+  return axios.get(
+    `https://api.attlas.io/api/v1/exchange/depth?symbol=${symbol || "RACAUSDT"}`
+  );
+}
+
 function getAllListCrypto() {
   return axios.get("https://exchange.vndc.io/exchange/api/v1/showup-prices");
 }
@@ -50,6 +56,8 @@ function App() {
     localStorage.getItem("usdt") || 23780
   );
   const [playing, alertNotify] = useAudio(notifyAudio);
+  const [atlasRaccaUsdt, setAtlasRaccaUsdt] = useState({});
+  const [atlasRaccaVndc, setAtlasRaccaVndc] = useState({});
 
   const handleUsdt = async () => {
     const [usdtBuy, usdtSell] = await Promise.all([
@@ -69,6 +77,7 @@ function App() {
     }, 10000);
     // getKaiInfo();
     setInterval(async () => {
+      handleGetAtlasCrypto();
       const res = await getAllListCrypto();
       const data = res?.data;
       setListCoins(data);
@@ -82,6 +91,27 @@ function App() {
     console.log("sound!!!");
     alertNotify();
   }
+
+  const handleGetAtlasCrypto = async () => {
+    try {
+      const [resusdt, resvndc] = await Promise.all([
+        getCryptoBySymbolAtlas("RACAUSDT"),
+        getCryptoBySymbolAtlas("RACAVNDC"),
+      ]);
+      const dataUsdt = resusdt?.data?.data;
+      const dataVndc = resvndc?.data?.data;
+      setAtlasRaccaUsdt({
+        ask: dataUsdt.bids[0][0],
+        bid: dataUsdt.asks[0][0],
+      });
+      setAtlasRaccaVndc({
+        ask: dataVndc.bids[0][0],
+        bid: dataVndc.asks[0][0],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const listCoinsWatch = [
     {
@@ -100,6 +130,16 @@ function App() {
       usdtPrice: listCoins["RACAUSDT"],
       usdtVndcFixed: usdtVndcFixed,
       pcAlert: 2,
+      percentInlation: 0.02,
+      handleALert: handleALert,
+      percentShowWarning: 1,
+    },
+    {
+      name: "RACA AT",
+      vndcPrice: atlasRaccaVndc,
+      usdtPrice: atlasRaccaUsdt,
+      usdtVndcFixed: usdtVndcFixed,
+      pcAlert: 100,
       percentInlation: 0.02,
       handleALert: handleALert,
       percentShowWarning: 1,
